@@ -1,0 +1,85 @@
+HTML CODE
+LOGIN CODE:
+<h2>Admin Login</h2>
+<form method="POST">
+    Username: <input type="text" name="username" required><br>
+    Password: <input type="password" name="password" required><br>
+    <input type="submit" value="Login">
+</form>
+ADMIN CODE:
+<h2>Admin Dashboard</h2>
+<a href="/download">Download CSV</a> | <a href="/logout">Logout</a>
+<table border="1">
+    <tr><th>ID</th><th>Name</th><th>Course</th><th>Rating</th><th>Feedback</th><th>Sentiment</th></tr>
+    {% for f in feedbacks %}
+    <tr>
+        <td>{{f.id}}</td><td>{{f.student_name}}</td><td>{{f.course}}</td>
+        <td>{{f.rating}}</td><td>{{f.feedback_text}}</td><td>{{f.sentiment}}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<h3>Average Ratings per Course</h3>
+<canvas id="ratingChart" width="400" height="200"></canvas>
+
+<h3>Feedback Sentiment</h3>
+<canvas id="sentimentChart" width="400" height="200"></canvas>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+var ctx = document.getElementById('ratingChart').getContext('2d');
+var ratingChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: {{ courses|tojson }},
+        datasets: [{
+            label: 'Average Rating',
+            data: {{ avg_ratings|tojson }},
+            backgroundColor: 'rgba(75, 192, 192, 0.6)'
+        }]
+    }
+});
+
+var ctx2 = document.getElementById('sentimentChart').getContext('2d');
+var sentimentChart = new Chart(ctx2, {
+    type: 'pie',
+    data: {
+        labels: ['Positive', 'Negative', 'Neutral'],
+        datasets: [{
+            data: [{{ sentiment_counts['Positive'] }}, {{ sentiment_counts['Negative'] }}, {{ sentiment_counts['Neutral'] }}],
+            backgroundColor: ['green','red','gray']
+        }]
+    }
+});
+</script>
+FEEDBACK CODE:
+<!DOCTYPE html>
+<html>
+<head><title>Feedback Form</title></head>
+<body>
+<h2>Student Feedback</h2>
+<form method="POST">
+    Name: <input type="text" name="name" required><br>
+    Course: <input type="text" name="course" required><br>
+    Rating: 
+    <select name="rating" required>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+    </select><br>
+    Feedback: <textarea name="feedback" required></textarea><br>
+    <input type="submit" value="Submit">
+</form>
+</body>
+</html>
+THANK YOU CODE:
+<h2>Thank you for your feedback!</h2>
+<a href="/">Go back</a>
+
+
+
+
+
+
